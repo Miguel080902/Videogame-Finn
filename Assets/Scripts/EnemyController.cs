@@ -13,15 +13,27 @@ public class EnemyController : MonoBehaviour
     private Vector2 movement;
     private bool enMovimiento;
     private bool recibiendoDanio;
+    private bool playerVivo;
+
     private Animator animator;
     void Start()
     {
+        playerVivo = true;
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
 
 
     void Update()
+    {
+        if (playerVivo)
+        {
+            Movimiento();
+        }
+
+        animator.SetBool("enMovimiento", enMovimiento);
+    }
+    private void Movimiento()
     {
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
@@ -47,19 +59,22 @@ public class EnemyController : MonoBehaviour
             movement = Vector2.zero;
             enMovimiento = false;
         }
-        if(!recibiendoDanio)
+        if (!recibiendoDanio)
             rb.MovePosition(rb.position + movement * speed * Time.deltaTime);
-
-        animator.SetBool("enMovimiento", enMovimiento);
     }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
             Vector2 direccionDanio = new Vector2(transform.position.x, 0);
+            PlayerController playerScript = collision.gameObject.GetComponent<PlayerController>();
 
-            collision.gameObject.GetComponent<PlayerController>().RecibeDanio(direccionDanio, 1);
+            playerScript.RecibeDanio(direccionDanio, 1);
+            playerVivo = !playerScript.muerto;
+            if (!playerVivo)
+            {
+                enMovimiento = false;
+            }
         }
     }
 
