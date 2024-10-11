@@ -472,6 +472,7 @@ MonoBehaviour:
   detectionRadius: 4.56
   speed: 16.4
   fuerzaRebote: 6
+  vida: 3
 --- !u!95 &957152707
 Animator:
   serializedVersion: 4
@@ -695,12 +696,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocidad: 5
+  vida: 3
   fuerzaSalto: 8
   fuerzaRebote: 6
   longitudRaycast: 0.59
   capaSuelo:
     serializedVersion: 2
     m_Bits: 8
+  muerto: 0
   animator: {fileID: 1887030371}
 --- !u!212 &1887030367
 SpriteRenderer:
