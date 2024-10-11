@@ -8,10 +8,12 @@ public class EnemyController : MonoBehaviour
     public float detectionRadius = 5.0f; 
     public float speed = 2.0f;
     public float fuerzaRebote = 6f;
+    public int vida = 3;
 
     private Rigidbody2D rb;
     private Vector2 movement;
     private bool enMovimiento;
+    private bool muerto;
     private bool recibiendoDanio;
     private bool playerVivo;
 
@@ -26,12 +28,13 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
-        if (playerVivo)
+        if (playerVivo && !muerto)
         {
             Movimiento();
         }
 
         animator.SetBool("enMovimiento", enMovimiento);
+        animator.SetBool("muerto", muerto);
     }
     private void Movimiento()
     {
@@ -91,10 +94,19 @@ public class EnemyController : MonoBehaviour
     {
         if (!recibiendoDanio)
         {
+            vida -= cantDanio;
             recibiendoDanio = true;
-            Vector2 rebote = new Vector2(transform.position.x - direccion.x, 0.2f).normalized;
-            rb.AddForce(rebote * fuerzaRebote, ForceMode2D.Impulse);
-            StartCoroutine(DesactivaDanio());
+            if (vida <= 0)
+            {
+                muerto = true;
+                enMovimiento = false;
+            }
+            else
+            {
+                Vector2 rebote = new Vector2(transform.position.x - direccion.x, 0.2f).normalized;
+                rb.AddForce(rebote * fuerzaRebote, ForceMode2D.Impulse);
+                StartCoroutine(DesactivaDanio());
+            }
         }
     }
     IEnumerator DesactivaDanio()
@@ -103,7 +115,10 @@ public class EnemyController : MonoBehaviour
         recibiendoDanio = false;
         rb.velocity = Vector2.zero;
     }
-
+    public void EliminarCuerpo()
+    {
+        Destroy(gameObject);
+    }
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
