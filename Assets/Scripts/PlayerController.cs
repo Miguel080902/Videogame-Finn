@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class PlayerController : MonoBehaviour
 {
@@ -17,12 +18,14 @@ public class PlayerController : MonoBehaviour
     private bool atacando;
     public bool muerto;
 
+    float scaleZ;
     private Rigidbody2D rb; 
 
     public Animator animator;
     // Start is called before the first frame update
     void Start()
     {
+        scaleZ = transform.localScale.z;
         rb = GetComponent<Rigidbody2D>();
     }
 
@@ -64,11 +67,12 @@ public class PlayerController : MonoBehaviour
 
         if (velocidadX < 0)
         {
-            transform.localScale = new Vector3(-1, 1, 1);
+            
+            transform.localScale = new Vector3(-scaleZ, 1, 1);
         }
         if (velocidadX > 0)
         {
-            transform.localScale = new Vector3(1, 1, 1);
+            transform.localScale = new Vector3(scaleZ, 1, 1);
         }
 
         Vector3 posicion = transform.position;
