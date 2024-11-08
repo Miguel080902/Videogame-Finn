@@ -10,7 +10,18 @@ public class CamaraController : MonoBehaviour
 
     private void LateUpdate()
     {
+        //la posicion deseada en y debe tener un limite entre -2 a 2
         Vector3 posicionDeseada = objetivo.position + desplazamiento;
+
+        //limitar la posicion en y
+        if (posicionDeseada.y > 2)
+        {
+            posicionDeseada.y = 2;
+        }
+        else if (posicionDeseada.y < -1.5)
+        {
+            posicionDeseada.y = -1.5f;
+        }
 
         Vector3 posicionSuavizada = Vector3.Lerp(transform.position, posicionDeseada, velocidadCamara);
 
