@@ -6,6 +6,7 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 public class PlayerController : MonoBehaviour
 {
     public PlayerSoundController playerSoundController;
+    public ParticleSystem particulaSalto;
 
     public float velocidad = 5f;
     public bool step1 = false;
@@ -55,6 +56,7 @@ public class PlayerController : MonoBehaviour
                 {
                     fall = true;
                     playerSoundController.playSaltar();
+                    crearParticulaSalto();
                     rb.AddForce(new Vector2(0f, fuerzaSalto), ForceMode2D.Impulse);
                 }
             }
@@ -71,6 +73,10 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("muerto", muerto);
     }
        
+    void crearParticulaSalto()
+    {
+        particulaSalto.Play();
+    }
     public void Movimiento()
     {
         float velocidadX = Input.GetAxis("Horizontal") * Time.deltaTime * velocidad;
@@ -122,6 +128,11 @@ public class PlayerController : MonoBehaviour
             {
                 playerSoundController.playMuerte();
                 muerto = true;
+
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.GameOver();
+                }
             }
             if (!muerto)
             {

@@ -26,6 +26,7 @@ public class NivelSelector : MonoBehaviour
             int levelIndex = i;
             buttonObj.GetComponent<Button>().onClick.AddListener(() =>
             {
+                Time.timeScale = 1f; 
                 SceneManager.LoadScene("Nivel_" + levelIndex);
             });
         }
