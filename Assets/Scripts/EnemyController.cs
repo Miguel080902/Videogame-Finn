@@ -11,7 +11,7 @@ public class EnemyController : MonoBehaviour
     public int vida = 3;
 
     private Rigidbody2D rb;
-    private Vector2 movement;
+    private float movementX;
     private bool enMovimiento;
     private bool muerto;
     private bool recibiendoDanio;
@@ -53,17 +53,17 @@ public class EnemyController : MonoBehaviour
                 transform.localScale = new Vector3(1, 1, 1);
             }
 
-            movement = new Vector2(direction.x, 0);
+            movementX = direction.x;
 
             enMovimiento = true;
         }
         else
         {
-            movement = Vector2.zero;
+            movementX = 0;
             enMovimiento = false;
         }
         if (!recibiendoDanio)
-            rb.MovePosition(rb.position + movement * speed * Time.deltaTime);
+            rb.velocity = new Vector2(movementX * speed, rb.velocity.y);
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -98,6 +98,7 @@ public class EnemyController : MonoBehaviour
             recibiendoDanio = true;
             if (vida <= 0)
             {
+                rb.velocity = new Vector2(0, rb.velocity.y);
                 muerto = true;
                 enMovimiento = false;
             }
