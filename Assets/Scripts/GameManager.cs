@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Xml.Serialization;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,6 +14,11 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI gameOverText;
     public Button reiniciarButton;
     public Button menuButton;
+
+    [Header("Monedas")]
+    public int monedas = 0;
+    public TextMeshProUGUI textoMonedas;
+
 
     private bool gameOverActivo = false;
 
@@ -39,6 +45,9 @@ public class GameManager : MonoBehaviour
 
         if (menuButton != null)
             menuButton.onClick.AddListener(IrAlMenu);
+
+        CargarMonedas();
+        ActualizarMonedasUI();
     }
 
     void Update()
@@ -55,6 +64,29 @@ public class GameManager : MonoBehaviour
                 IrAlMenu();
             }
         }
+    }
+
+    public void SumarMoneda(int cantidad)
+    {
+        monedas += cantidad;
+        ActualizarMonedasUI();
+        GuardarMonedas();
+    }
+    void ActualizarMonedasUI()
+    {
+        if (textoMonedas != null)
+            textoMonedas.text = "x" + monedas.ToString();
+    }
+
+    void GuardarMonedas()
+    {
+        PlayerPrefs.SetInt("Monedas", monedas);
+        PlayerPrefs.Save();
+    }
+
+    void CargarMonedas()
+    {
+        monedas = PlayerPrefs.GetInt("Monedas", 0);
     }
 
     public void GameOver()

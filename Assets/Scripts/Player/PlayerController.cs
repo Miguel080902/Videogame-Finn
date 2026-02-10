@@ -11,7 +11,8 @@ public class PlayerController : MonoBehaviour
     public float velocidad = 5f;
     public bool step1 = false;
     public bool fall = false;
-    public int vida = 3;
+    public int vida = 5;
+    public int vidaMax = 3;
     public float timeByStep = 0.2f;
     float cont = 0f;
 
@@ -34,6 +35,7 @@ public class PlayerController : MonoBehaviour
     {
         scaleZ = transform.localScale.z;
         rb = GetComponent<Rigidbody2D>();
+        vida = vidaMax;
     }
 
     // Update is called once per frame
@@ -157,6 +159,16 @@ public class PlayerController : MonoBehaviour
     public void DesactivaAtaque()
     {
         atacando = false;
+    }
+
+    public void CurarVida(int cantidad)
+    {
+        vida += cantidad;
+
+        if (vida > vidaMax)
+        {
+            vida = vidaMax;
+        }
     }
 
     void OnDrawGizmos()
