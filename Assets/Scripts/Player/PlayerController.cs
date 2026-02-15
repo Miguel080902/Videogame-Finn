@@ -133,7 +133,7 @@ public class PlayerController : MonoBehaviour
 
                 if (GameManager.Instance != null)
                 {
-                    GameManager.Instance.GameOver();
+                    GameManager.Instance.RespawnJugador();
                 }
             }
             if (!muerto)
@@ -142,6 +142,21 @@ public class PlayerController : MonoBehaviour
                 rb.AddForce(rebote * fuerzaRebote, ForceMode2D.Impulse);
             }
         }
+    }
+
+    public void Respawn(Vector3 posicionCheckpoint)
+    {
+        muerto = false;
+        recibiendoDanio = false;
+        atacando = false;
+        vida = vidaMax;
+
+        transform.position = posicionCheckpoint;
+
+        rb.velocity = Vector2.zero;
+
+        animator.SetBool("muerto", false);
+        animator.SetBool("recibeDanio", false);
     }
 
     public void DesactivaDanio()

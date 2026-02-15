@@ -19,6 +19,9 @@ public class GameManager : MonoBehaviour
     public int monedas = 0;
     public TextMeshProUGUI textoMonedas;
 
+    [Header("Checkpoint")]
+    public Vector3 checkpointPosicion;
+    private Checkpoint checkpointActual;
 
     private bool gameOverActivo = false;
 
@@ -48,6 +51,12 @@ public class GameManager : MonoBehaviour
 
         CargarMonedas();
         ActualizarMonedasUI();
+
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            checkpointPosicion = player.transform.position;
+        }
     }
 
     void Update()
@@ -116,5 +125,26 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene("Menu");
+    }
+
+    public void ActualizarCheckpoint(Vector3 nuevaPosicion, Checkpoint nuevoCheckpoint)
+    {
+        checkpointPosicion = nuevaPosicion;
+        checkpointActual = nuevoCheckpoint;
+    }
+
+    public void RespawnJugador()
+    {
+        StartCoroutine(RespawnCoroutine());
+    }
+
+    IEnumerator RespawnCoroutine()
+    {
+        yield return new WaitForSeconds(1f);
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            player.GetComponent<PlayerController>().Respawn(checkpointPosicion);
+        }
     }
 }
