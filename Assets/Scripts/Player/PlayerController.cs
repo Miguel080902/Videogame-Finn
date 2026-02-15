@@ -19,7 +19,11 @@ public class PlayerController : MonoBehaviour
     public float fuerzaSalto = 10f; 
     public float fuerzaRebote = 6f; 
     public float longitudRaycast = 0.1f; 
-    public LayerMask capaSuelo; 
+    public LayerMask capaSuelo;
+
+    [Header("Doble Salto")]
+    public bool dobleSaltoDesbloqueado = false;
+    private bool puedeDobleSaltar = false;
 
     private bool enSuelo; 
     private bool recibiendoDanio;
@@ -36,6 +40,7 @@ public class PlayerController : MonoBehaviour
         scaleZ = transform.localScale.z;
         rb = GetComponent<Rigidbody2D>();
         vida = vidaMax;
+        dobleSaltoDesbloqueado = PlayerPrefs.GetInt("DobleSaltoDesbloqueado", 0) == 1;
     }
 
     // Update is called once per frame
@@ -60,6 +65,20 @@ public class PlayerController : MonoBehaviour
                     playerSoundController.playSaltar();
                     crearParticulaSalto();
                     rb.AddForce(new Vector2(0f, fuerzaSalto), ForceMode2D.Impulse);
+                    if (dobleSaltoDesbloqueado)
+                    {
+                        puedeDobleSaltar = true;
+                    }
+                } 
+                else if (!enSuelo && Input.GetKeyDown(KeyCode.Space) && dobleSaltoDesbloqueado && puedeDobleSaltar && !recibiendoDanio)
+                {
+                    playerSoundController.playSaltar();
+                    crearParticulaSalto();
+
+                    rb.velocity = new Vector2(rb.velocity.x, 0f);
+                    rb.AddForce(new Vector2(0f, fuerzaSalto), ForceMode2D.Impulse);
+
+                    puedeDobleSaltar = false;
                 }
             }
 
@@ -74,7 +93,14 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Atacando", atacando);
         animator.SetBool("muerto", muerto);
     }
-       
+
+    public void DesbloquearDobleSalto()
+    {
+        dobleSaltoDesbloqueado = true;
+        PlayerPrefs.SetInt("DobleSaltoDesbloqueado", 1);
+        PlayerPrefs.Save();
+    }
+
     void crearParticulaSalto()
     {
         particulaSalto.Play();
@@ -133,7 +159,7 @@ public class PlayerController : MonoBehaviour
 
                 if (GameManager.Instance != null)
                 {
-                    GameManager.Instance.GameOver();
+                    GameManager.Instance.RespawnJugador();
                 }
             }
             if (!muerto)
@@ -142,6 +168,21 @@ public class PlayerController : MonoBehaviour
                 rb.AddForce(rebote * fuerzaRebote, ForceMode2D.Impulse);
             }
         }
+    }
+
+    public void Respawn(Vector3 posicionCheckpoint)
+    {
+        muerto = false;
+        recibiendoDanio = false;
+        atacando = false;
+        vida = vidaMax;
+
+        transform.position = posicionCheckpoint;
+
+        rb.velocity = Vector2.zero;
+
+        animator.SetBool("muerto", false);
+        animator.SetBool("recibeDanio", false);
     }
 
     public void DesactivaDanio()
