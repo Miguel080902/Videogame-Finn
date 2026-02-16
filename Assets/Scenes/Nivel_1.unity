@@ -15154,6 +15154,7 @@ MonoBehaviour:
   capaSuelo:
     serializedVersion: 2
     m_Bits: 8
+  dobleSaltoDesbloqueado: 1
   muerto: 0
   animator: {fileID: 1887030371}
 --- !u!212 &1887030367
