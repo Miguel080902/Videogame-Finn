@@ -19,7 +19,11 @@ public class PlayerController : MonoBehaviour
     public float fuerzaSalto = 10f; 
     public float fuerzaRebote = 6f; 
     public float longitudRaycast = 0.1f; 
-    public LayerMask capaSuelo; 
+    public LayerMask capaSuelo;
+
+    [Header("Doble Salto")]
+    public bool dobleSaltoDesbloqueado = false;
+    private bool puedeDobleSaltar = false;
 
     private bool enSuelo; 
     private bool recibiendoDanio;
@@ -60,6 +64,19 @@ public class PlayerController : MonoBehaviour
                     playerSoundController.playSaltar();
                     crearParticulaSalto();
                     rb.AddForce(new Vector2(0f, fuerzaSalto), ForceMode2D.Impulse);
+
+                    if (dobleSaltoDesbloqueado)
+                    {
+                        puedeDobleSaltar = true;
+                    }
+                } else if (!enSuelo && Input.GetKeyDown(KeyCode.Space) && dobleSaltoDesbloqueado && puedeDobleSaltar && !recibiendoDanio)
+                {
+                    playerSoundController.playSaltar();
+                    crearParticulaSalto();
+                    rb.velocity = new Vector2(rb.velocity.x, 0f);
+                    rb.AddForce(new Vector2(0f, fuerzaSalto), ForceMode2D.Impulse);
+
+                    puedeDobleSaltar = false;
                 }
             }
 
